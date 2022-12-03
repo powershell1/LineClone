@@ -54,6 +54,9 @@ app.ws("/ws", (ws, req) => {
             };
         };
     });
+    ws.on("close", () => {
+        delete every_ws[id];
+    });
     var chatHistory = fs.readFileSync("chat.json", "utf8");
     ws.send(JSON.stringify({
         type: "chat_history",
@@ -64,8 +67,7 @@ app.ws("/ws", (ws, req) => {
 app.post("/upload", (req, res) => {
     var file_selected = req.files.files;
     if (!file_selected) { res.send("File not found!"); return; };
-    var file_name = decodeURIComponent(file_selected.name);
-    console.log(file_selected.name);
+    var file_name = decodeURIComponent(atob(req.headers.file_name));
     fs.writeFileSync(path.join(__dirname, "uploads", file_name), file_selected.data);
     if (req.headers.name == "") {
         req.headers.name = "Anonymous";
@@ -82,14 +84,16 @@ app.post("/upload", (req, res) => {
             "type": "file",
             "name": req.headers.name,
             "url": "/get_upload/" + file_name,
-            "file_type": file_selected.mimetype
+            "file_type": file_selected.mimetype,
+            "file_size": file_selected.size
         }));
     };
     res.send("Uploaded!");
 });
 
-app.use("/download", (req, res) => {
-    var find_src = path.join(__dirname, "uploads", req.path);
+app.use("/download", (req, res, next) => {
+    var decode = decodeURIComponent(req.url);
+    var find_src = path.join(__dirname, "uploads", decode);
     if (fs.existsSync(find_src)) {
         res.download(find_src);
     } else {
@@ -98,7 +102,8 @@ app.use("/download", (req, res) => {
 });
 
 app.use("/get_upload", (req, res, next) => {
-    var find_src = path.join(__dirname, "uploads", req.path);
+    var decode = decodeURIComponent(req.url);
+    var find_src = path.join(__dirname, "uploads", decode);
     if (fs.existsSync(find_src)) {
         res.sendFile(find_src);
     } else {

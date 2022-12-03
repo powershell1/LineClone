@@ -36,7 +36,18 @@ function GetDownloadName(link) {
     return name;
 };
 
-function AddFile(sender, url, mineType) {
+function FileToLongName(file_name) {
+    var length = 15;
+    if (file_name.length > length) {
+        var long_name = file_name.split(".");
+        var long_name = long_name[0].slice(0, Math.floor(length / 3)) + "..." + long_name[0].slice(Math.floor(length / 1.25), file_name.length) + "." + long_name[1];
+        return long_name;
+    } else {
+        return file_name;
+    };
+};
+
+function AddFile(sender, url, mineType, filesize) {
     var filetype = mineTypeCheck(mineType);
     if (filetype == "image") {
         var chat = document.getElementById("chat_msgshow");
@@ -96,10 +107,10 @@ function AddFile(sender, url, mineType) {
         var chat_a2 = document.createElement("a");
         chat_a2.className = "name";
         chat_a2.href = `/download/${download_link}`;
-        chat_a2.innerText = download_link;
+        chat_a2.innerText = FileToLongName(download_link);
         var chat_a3 = document.createElement("a");
         chat_a3.className = "size";
-        chat_a3.innerText = "0.00MB";
+        chat_a3.innerText = filesize.toFixed(2) + "MB";
         var chat_img = document.createElement("img");
         chat_img.src = "/public/download.png";
         chat_img.className = "file_download";
@@ -137,7 +148,7 @@ websocket.addEventListener("message", (event) => {
     if (data.type == "message") {
         AddText(data.name, data.text);
     } else if (data.type == "file") {
-        AddFile(data.name, data.url, data.file_type);
+        AddFile(data.name, data.url, data.file_type, (data.file_size / 1024));
     } else if (data.type == "chat_history") {
         var chatHistory = JSON.parse(data.body);
         clearInterval(LoadingInterval);
@@ -148,7 +159,7 @@ websocket.addEventListener("message", (event) => {
                 AddText(element2.name, element2.text);
             } else if (element2.url) {
                 fetch(element2.url).then((res) => {
-                    AddFile(element2.name, element2.url, res.headers.get("Content-Type"));
+                    AddFile(element2.name, element2.url, res.headers.get("Content-Type"), (parseInt(res.headers.get("Content-Length"), 10) / 1024));
                 });
             };
         });
@@ -177,11 +188,13 @@ document.getElementById("file_upload").addEventListener("click", () => {
         new_file.remove();
         files.forEach(file => {
             var formData = new FormData();
-            formData.append("files", renameFile(file, encodeURIComponent(file.name)));
+            var newfile_name = btoa(encodeURIComponent(file.name));
+            formData.append("files", renameFile(file, newfile_name));
             fetch("/upload", {
                 method: "POST",
                 headers: {
-                    "name": name_inp
+                    "name": name_inp,
+                    "file_name": newfile_name
                 },
                 body: formData
             });
