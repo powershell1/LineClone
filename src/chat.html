@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+    <style>
+        body {
+            margin: 0, 0;
+            background-size: 100%;
+            font-family: 'Open Sans', sans-serif, Arial;
+            background-color: #242424;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        .center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .whitediv {
+            background-color: white;
+            width: 500px;
+            height: 500px;
+            border-radius: 10px;
+        }
+        .project_text {
+            position: absolute;
+            color: white;
+            opacity: 25%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .chat_text {
+            color: white;
+            display: inline-block;
+        }
+        .chat_img {
+            max-width: 300px;
+            border-radius: 5px;
+        }
+        .chat_audio {
+            max-width: 300px;
+        }
+        .chat_video {
+            max-width: 300px;
+            border-radius: 5px;
+        }
+
+        .chat_download {
+            background-color: rgb(85, 85, 85);
+            border-radius: 5px;
+            width: 120px;
+            height: 40px;
+        }
+        .chat_download .name {
+            position: absolute;
+            top: 12px;
+            left: 20px;
+            color: rgb(0, 207, 207);
+            text-decoration: none;
+        }
+        .chat_download .name:hover {
+            color: rgb(0, 207, 207);
+            text-decoration: underline;
+        }
+        .chat_download .size {
+            position: absolute;
+            top: 28px;
+            left: 20px;
+            font-size: 15px;
+            color: white;
+            opacity: 40%;
+        }
+        .chat_download img {
+            position: absolute;
+            top: 10px;
+            left: 90px;
+            width: 30px;
+            filter: invert(1);
+        }
+
+        #bottom_chat {
+            background-color: rgb(59, 59, 59);
+            position: absolute;
+            top: 100%;
+            transform: translate(0%, -100%);
+            width: 100%;
+            height: 50px;
+            border-radius: 0px 0px 9px 9px;
+        }
+        #bottom_chat img {
+            position: absolute;
+            top: 50%;
+            left: 3%;
+            transform: translate(-3%, -50%);
+            width: 22px;
+            z-index: 3;
+            filter: invert(1);
+            transition: all .25s;
+        }
+        #bottom_chat img:hover {
+            filter: invert(0.8);
+        }
+        #bottom_chat textarea {
+            background-color: rgb(71, 71, 71);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            caret-color: white;
+            color: white;
+            border-radius: 5px;
+            width: 440px;
+            padding: 5px;
+            padding-left: 45px;
+            border: 0px;
+            resize: none;
+            z-index: 2;
+        }
+        #bottom_chat textarea::placeholder {
+            color: rgb(221, 221, 221);
+        }
+        #bottom_chat textarea:focus {
+            outline: none;
+        }
+        #chat_msgshow {
+            background-color: rgb(65, 65, 65);
+            position: absolute;
+            width: 96%;
+            height: 430px;
+            overflow-y: scroll;
+            padding: 10px;
+            border-radius: 9px 9px 0px 0px;
+        }
+        #enter_name {
+            background-color: rgb(65, 65, 65);
+            width: 250px;
+            height: 50px;
+            border-radius: 5px;
+        }
+        #enter_name input {
+            position: absolute;
+            top: 50%;
+            left: 20%;
+            transform: translate(-20%, -50%);
+            border-radius: 5px;
+            padding: 5px;
+            border: 0px;
+        }
+        #enter_name input:focus {
+            outline: none;
+        }
+        #enter_name button {
+            position: absolute;
+            top: 50%;
+            left: 95%;
+            transform: translate(-95%, -50%);
+            border-radius: 5px;
+            padding: 5px;
+            background-color: white;
+            border: 0px;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat_download">
+        <a class="name" href="/download/cracksatitpatumwanpasswordez.txt">Hello.txt</a>
+        <a class="size">10kb</a>
+        <img id="file_download" src="/public/download.png">
+    </div>
+
+
+    <div id="LoadingDIV" class="center">
+        <h1 id="LoadingText" style="color: white;">Enable Javascript</h1>
+    </div>
+    <div id="enter_name" class="center" style="visibility: hidden;">
+        <input type="text" id="name_input" placeholder="Enter your name">
+        <button id="name_btn">Enter</button>
+    </div>
+    <div id="chat" style="visibility: hidden;">
+        <div class="center whitediv">
+            <div id="chat_msgshow">
+            </div>
+            <div id="bottom_chat">
+                <img id="file_upload" src="/public/upload.png">
+                <textarea type="text" id="chat_msg" placeholder="Send message to Chat (Enter to send message)"></textarea>
+            </div>
+        </div>
+        <a class="project_text">Project By: Miss Puntharee Paisanwatchrakij</a>
+    </div>
+    <script>
+        document.getElementById("LoadingText").innerText = "Error 404: Javascript not found";
+    </script>
+    <script src="/public/script.js"></script>
+</body>
+</html>
