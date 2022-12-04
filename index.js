@@ -34,7 +34,8 @@ app.ws("/ws", (ws, req) => {
                 var data_read = JSON.parse(fs.readFileSync(path.join(__dirname, "chat.json")));
                 data_read["history"].push({
                     "name": data.name,
-                    "text": data.body
+                    "text": data.body,
+                    "time": Date.now()
                 });
                 fs.writeFileSync(path.join(__dirname, "chat.json"), JSON.stringify(data_read));
                 for (const property in every_ws) {
@@ -42,7 +43,8 @@ app.ws("/ws", (ws, req) => {
                     socket.send(JSON.stringify({
                         "type": "message",
                         "name": data.name,
-                        "text": data.body
+                        "text": data.body,
+                        "time": Date.now()
                     }));
                 };
             } else if (data.type == "chat_history") {
@@ -76,6 +78,7 @@ app.post("/upload", (req, res) => {
     data_read["history"].push({
         "name": req.headers.name,
         "url": "/get_upload/" + file_name,
+        "time": Date.now(),
     });
     fs.writeFileSync(path.join(__dirname, "chat.json"), JSON.stringify(data_read));
     for (const property in every_ws) {
@@ -83,6 +86,7 @@ app.post("/upload", (req, res) => {
         socket.send(JSON.stringify({
             "type": "file",
             "name": req.headers.name,
+            "time": Date.now(),
             "url": "/get_upload/" + file_name,
             "file_type": file_selected.mimetype,
             "file_size": file_selected.size
