@@ -17,8 +17,8 @@ Element.prototype.insertChildAtIndex = function(child, index) {
 var LoadingText = document.getElementById("LoadingText");
 
 var host = document.location.host;
-var protocal = document.location.protocal;
-var towsp = protocal == "http:" ? "ws://" : "wss://";
+var protocal = document.location.href.split("://")[0];
+var towsp = protocal == "https" ? "wss://" : "ws://";
 var websocket = new WebSocket(`${towsp}${host}/ws`);
 var loadingdot = 2;
 
