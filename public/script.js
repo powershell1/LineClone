@@ -87,6 +87,7 @@ function AddText(pos, sender, timestamp, body) {
         };
         chat_div.appendChild(chat_a2);
         chat.insertChildAtIndex(chat_div, pos);
+        resolve();
     });
 };
 
@@ -103,7 +104,7 @@ function AddFile(pos, sender, timestamp, url, mineType, filesize) {
             if (howmany_days < 1) { timeshow = "today"; } else if (howmany_days < 2 && howmany_days >= 1) { timeshow = "yesterday"; } else { timeshow = ToTwoDigits(created_at.getDate()) + "/" + ToTwoDigits(created_at.getMonth() + 1) + "/" + created_at.getFullYear(); };
             var chat_a = document.createElement("a");
             var chat_date = document.createElement("a");
-            chat_a.innerText = `${sender}: `;
+            chat_a.innerText = `${sender}`;
             chat_a.className = "chat_text";
             chat_date.innerText = `${timeshow} ${time}`;
             chat_date.className = "chat_date";
