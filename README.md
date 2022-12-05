@@ -3,7 +3,7 @@
 Q: Pont of this?<br />
 A: Point of this project is web chat but anything you send will store for a lifetime until the world end, the server shutdown<br />
 Q: Why should I use this?<br />
-A: This webchat won't automatically delete files or upload limit ( I use free hosting the size limit of the server is 1GB )<br />
+A: This webchat won't automatically delete files or upload limit ( Up to server storage in this case I use a 1GB server )<br />
 ### How to use it?
 You can download this project and run `node index.js` the server will start and you can visit `localhost` or you can visit this website https://webchat.powershell1.repl.co/<br />
 #### ⚠️ Make sure you didn't run any server on port 80 ⚠️
