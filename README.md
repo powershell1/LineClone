@@ -7,8 +7,8 @@ A: This webchat won't automatically delete files or upload limit ( I use free ho
 ### How to use it?
 You can download this project and run `node index.js` the server will start and you can visit `localhost` or you can visit this website https://webchat.powershell1.repl.co/<br />
 #### ⚠️ Make sure you didn't run any server on port 80 ⚠️
-### How do I create?
 #### ⚠️ If you want to chat with friends with self-hosting you need to use `Hamachi, Radmin VPN` ⚠️
+### How do I create?
 I create this by `express, express-ws and uuid` ( Example is minimizing version no file upload ), to create a server first we need to require express and open it to port 80
 ```javascript
 // (Server)
