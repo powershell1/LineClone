@@ -5,7 +5,7 @@ A: Point of this project is web chat but anything you send will store for a life
 Q: Why should I use this?<br />
 A: This webchat won't automatically delete files or upload limit ( I use free hosting the size limit of the server is 1GB )<br />
 ### How to use it?
-You can download this project and run `node index.js` the server will start and you can visit `localhost` or you can visit this website https://websitechat.powershell1.repl.co/<br />
+You can download this project and run `node index.js` the server will start and you can visit `localhost` or you can visit this website https://webchat.powershell1.repl.co/<br />
 #### ⚠️ Make sure you didn't run any server on port 80 ⚠️
 ### How do I create?
 #### ⚠️ If you want to chat with friends with self-hosting you need to use `Hamachi, Radmin VPN` ⚠️
