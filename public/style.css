@@ -46,18 +46,21 @@ body {
 .chat_img {
     max-width: 300px;
     border-radius: 5px;
+    display: block;
 }
 .chat_audio {
     max-width: 300px;
+    display: block;
 }
 .chat_video {
     max-width: 300px;
     border-radius: 5px;
+    display: block;
 }
 .chat_download {
     padding-left: 5px;
     padding-right: 5px;
-    display: inline-block;
+    display: block;
     position: relative;
     background-color: rgb(85, 85, 85);
     border-radius: 5px;

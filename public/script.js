@@ -76,7 +76,6 @@ function AddText(pos, sender, timestamp, body) {
             var time = ToTwoDigits(created_at.getHours()) + ":" + ToTwoDigits(created_at.getMinutes());
             var timeshow = "";
             if (howmany_days < 1) { timeshow = "today"; } else if (howmany_days < 2 && howmany_days >= 1) { timeshow = "yesterday"; } else { timeshow = ToTwoDigits(created_at.getDate()) + "/" + ToTwoDigits(created_at.getMonth() + 1) + "/" + created_at.getFullYear(); };
-    
             var chat_a = document.createElement("a");
             var chat_date = document.createElement("a");
             chat_a.innerText = `${sender}`;
@@ -94,22 +93,31 @@ function AddText(pos, sender, timestamp, body) {
 function AddFile(pos, sender, timestamp, url, mineType, filesize) {
     return new Promise((resolve, reject) => {
         var filetype = mineTypeCheck(mineType);
-        var chat_a = document.createElement("a");
-        chat_a.innerText = `${sender}: `;
-        chat_a.className = "chat_text";
+        var chat = document.getElementById("chat_msgshow");
+        var chat_div = document.createElement("div");
+        if (timestamp) {
+            var created_at = new Date(timestamp);
+            var howmany_days = ((Date.now() - timestamp) / 1000) / 86400;
+            var time = ToTwoDigits(created_at.getHours()) + ":" + ToTwoDigits(created_at.getMinutes());
+            var timeshow = "";
+            if (howmany_days < 1) { timeshow = "today"; } else if (howmany_days < 2 && howmany_days >= 1) { timeshow = "yesterday"; } else { timeshow = ToTwoDigits(created_at.getDate()) + "/" + ToTwoDigits(created_at.getMonth() + 1) + "/" + created_at.getFullYear(); };
+            var chat_a = document.createElement("a");
+            var chat_date = document.createElement("a");
+            chat_a.innerText = `${sender}: `;
+            chat_a.className = "chat_text";
+            chat_date.innerText = `${timeshow} ${time}`;
+            chat_date.className = "chat_date";
+            chat_div.appendChild(chat_a);
+            chat_div.appendChild(chat_date);
+        };
         if (filetype == "image") {
-            var chat = document.getElementById("chat_msgshow");
-            var chat_div = document.createElement("div");
             var chat_img = document.createElement("img");
             chat_img.src = url;
             chat_img.className = "chat_img";
-            chat_div.appendChild(chat_a);
             chat_div.appendChild(chat_img);
             chat.insertChildAtIndex(chat_div, pos);
             resolve();
         } else if (filetype == "audio") {
-            var chat = document.getElementById("chat_msgshow");
-            var chat_div = document.createElement("div");
             var chat_audio = document.createElement("audio");
             var chat_source = document.createElement("source");
             chat_audio.controls = true;
@@ -117,14 +125,11 @@ function AddFile(pos, sender, timestamp, url, mineType, filesize) {
             chat_audio.className = "chat_audio";
             chat_source.src = url;
             chat_source.type = mineType;
-            chat_div.appendChild(chat_a);
             chat_div.appendChild(chat_audio);
             chat_audio.appendChild(chat_source);
             chat.insertChildAtIndex(chat_div, pos);
             resolve();
         } else if (filetype == "video") {
-            var chat = document.getElementById("chat_msgshow");
-            var chat_div = document.createElement("div");
             var chat_video = document.createElement("video");
             var chat_source = document.createElement("source");
             chat_video.controls = true;
@@ -132,15 +137,12 @@ function AddFile(pos, sender, timestamp, url, mineType, filesize) {
             chat_video.className = "chat_video";
             chat_source.src = url;
             chat_source.type = mineType;
-            chat_div.appendChild(chat_a);
             chat_div.appendChild(chat_video);
             chat_video.appendChild(chat_source);
             chat.insertChildAtIndex(chat_div, pos);
             resolve();
         } else {
             var download_link = GetDownloadName(url)
-            var chat = document.getElementById("chat_msgshow");
-            var chat_div = document.createElement("div");
             var chat_div2 = document.createElement("div");
             chat_div2.className = "chat_download";
             var chat_a2 = document.createElement("a");
@@ -156,7 +158,6 @@ function AddFile(pos, sender, timestamp, url, mineType, filesize) {
             chat_img.addEventListener("click", () => {
                 window.open(`/download/${download_link}`, "_blank");
             });
-            chat_div.appendChild(chat_a);
             chat_div.appendChild(chat_div2);
             chat_div2.appendChild(chat_a2);
             chat_div2.appendChild(chat_a3);
@@ -187,24 +188,42 @@ websocket.addEventListener("close", () => {
 websocket.addEventListener("message", async (event) => {
     var data = JSON.parse(event.data);
     if (data.type == "message") {
-        var time_calc = data.time - (buffer_history[buffer_history.length - 1].time) / 1000;
+        var is_vaild = buffer_history[buffer_history.length - 1];
         buffer_history.push(data);
-        if (buffer_history[buffer_history.length - 1].time != data.time) {
-            if (time_calc > 120) {
-                await AddText(true, data.name, data.time, data.text);
+        if (is_vaild) {
+            var time_calc = (data.time - is_vaild.time) / 1000;
+            if (is_vaild.name != data.name) {
+                await AddText(buffer_history.length, data.name, data.time, data.text);
+            } else if (is_vaild.time != data.time) {
+                if (time_calc > 120) {
+                    await AddText(buffer_history.length, data.name, data.time, data.text);
+                } else {
+                    await AddText(buffer_history.length, data.name, false, data.text);
+                };
             } else {
-                await AddText(false, data.name, false, data.text);
+                await AddText(true, data.name, false, data.text);
             };
+        } else {
+            await AddText(true, data.name, data.time, data.text);
         };
     } else if (data.type == "file") {
-        var time_calc = (data.time - buffer_history[buffer_history.length - 1].time) / 1000;
+        var is_vaild = buffer_history[buffer_history.length - 1];
         buffer_history.push(data);
-        if (buffer_history[buffer_history.length - 1].time != data.time) {
-            if (time_calc > 120) {
-                await AddFile(true, data.name, data.time, data.url, data.file_type, (data.file_size / 1024));
+        if (is_vaild) {
+            var time_calc = (data.time - is_vaild.time) / 1000;
+            if (is_vaild.name != data.name) {
+                await AddFile(buffer_history.length, data.name, data.time, data.url, data.file_type, (data.file_size / 1024));
+            } else if (is_vaild.time != data.time) {
+                if (time_calc > 120) {
+                    await AddFile(buffer_history.length, data.name, data.time, data.url, data.file_type, (data.file_size / 1024));
+                } else {
+                    await AddFile(buffer_history.length, data.name, false, data.url, data.file_type, (data.file_size / 1024));
+                };
             } else {
-                await AddFile(false, data.name, false, data.url, data.file_type, (data.file_size / 1024));
+                await AddFile(true, data.name, false, data.url, data.file_type, (data.file_size / 1024));
             };
+        } else {
+            await AddFile(true, data.name, data.time, data.url, data.file_type, (data.file_size / 1024));
         };
     } else if (data.type == "chat_history") {
         var chatHistory = JSON.parse(data.body);
@@ -213,27 +232,43 @@ websocket.addEventListener("message", async (event) => {
         document.getElementById("enter_name").style = "";
         buffer_history = chatHistory.history;
         chatHistory.history.forEach(async (element2, idx2) => {
-            var time_calc = (buffer_history[buffer_history.length - 1].time - element2.time) / 1000;
+            var is_vaild = buffer_history[buffer_history.length - (buffer_history.length - idx2 + 1)];
             if (element2.text) {
-                if (buffer_history[buffer_history.length - 1].time != element2.time) {
-                    if (time_calc > 120) {
+                if (is_vaild) {
+                    var time_calc = (element2.time - is_vaild.time) / 1000;
+                    if (is_vaild.name != element2.name) {
                         await AddText(idx2, element2.name, element2.time, element2.text);
+                    } else if (is_vaild.time != element2.time) {
+                        if (time_calc > 120) {
+                            await AddText(idx2, element2.name, element2.time, element2.text);
+                        } else {
+                            await AddText(idx2, element2.name, false, element2.text);
+                        };
                     } else {
-                        await AddText(idx2, element2.name, false, element2.text);
+                        await AddText(true, element2.name, false, element2.text);
                     };
                 } else {
-                    await AddText(idx2, element2.name, false, element2.text);
+                    await AddText(true, element2.name, element2.time, element2.text);
                 };
             } else if (element2.url) {
-                if (buffer_history[buffer_history.length - 1].time != element2.time) {
-                    var fetch_content = await fetch(element2.url);
-                    if (time_calc > 120) {
-                        await AddFile(idx2, element2.name, element2.time, element2.url, fetch_content.headers.get("Content-Type"), (parseInt(fetch_content.headers.get("Content-Length"), 10) / 1024));
+                var fetch_content = await fetch(element2.url);
+                var fetch_type = fetch_content.headers.get("Content-Type");
+                var fetch_size = (parseInt(fetch_content.headers.get("Content-Length"), 10) / 1024);
+                if (is_vaild) {
+                    var time_calc = (element2.time - is_vaild.time) / 1000;
+                    if (is_vaild.name != element2.name) {
+                        await AddFile(idx2, element2.name, element2.time, element2.url, fetch_type, fetch_size);
+                    } else if (is_vaild.time != element2.time) {
+                        if (time_calc > 120) {
+                            await AddFile(idx2, element2.name, element2.time, element2.url, fetch_type, fetch_size);
+                        } else {
+                            await AddFile(idx2, element2.name, false, element2.url, fetch_type, fetch_size);
+                        };
                     } else {
-                        await AddFile(idx2, element2.name, false, element2.url, fetch_content.headers.get("Content-Type"), (parseInt(fetch_content.headers.get("Content-Length"), 10) / 1024));
+                        await AddFile(true, element2.name, false, element2.url, fetch_type, fetch_size);
                     };
                 } else {
-                    await AddFile(idx2, element2.name, false, element2.url, fetch_content.headers.get("Content-Type"), (parseInt(fetch_content.headers.get("Content-Length"), 10) / 1024));
+                    await AddFile(true, element2.name, element2.time, element2.url, fetch_type, fetch_size);
                 };
             };
         });
